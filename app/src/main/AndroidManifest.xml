@@ -19,7 +19,7 @@
         <activity android:name=".IngredientsActivity">
         </activity>
         <provider
-            android:authorities="com.example.android.items"
+            android:authorities="com.example.android.items_reflux"
             android:name=".data.IngredientProvider"
             android:exported="true"/>
     </application>

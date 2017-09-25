@@ -15,7 +15,7 @@
 
         <AutoCompleteTextView
             android:id="@+id/auto_complete"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:hint="Enter ingredient"
             android:textColor="@color/primary_text"
@@ -27,7 +27,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/icons"
-            android:text="Enter"
+            android:text="Add"
+            android:backgroundTint="@color/accent"/>
+
+        <Button
+            android:id="@+id/submit_ingredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/icons"
+            android:text="Submit"
             android:backgroundTint="@color/accent"/>
 
     </LinearLayout>
@@ -48,19 +56,11 @@
             style="@style/acidity_option"/>
 
         <TextView
-            android:id="@+id/acidic_low"
+            android:id="@+id/acidic_true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/acidity_option"
-            android:text="Low Acidic"/>
-
-        <TextView
-            android:id="@+id/acidic_high"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/acidity_option"
-            android:text="High Acidic"/>
-
+            android:text="Acidic"/>
 
     </LinearLayout>
 

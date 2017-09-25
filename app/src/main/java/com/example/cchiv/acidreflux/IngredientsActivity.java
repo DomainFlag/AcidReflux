@@ -62,7 +62,7 @@ public class IngredientsActivity extends AppCompatActivity implements LoaderCall
                 IngredientEntry.COL_ING_NAME,
                 IngredientEntry.COL_ING_ACIDITY
         };
-        return new CursorLoader(this, Uri.parse("content://com.example.android.items/ingredients"), projection, null, null, null);
+        return new CursorLoader(this, Uri.parse("content://com.example.android.items_reflux/ingredients/acidity"), projection, null, null, null);
     }
 
     @Override

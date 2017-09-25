@@ -35,6 +35,6 @@ public class IngredientsCursorAdapter extends CursorAdapter {
         textView = (TextView) view.findViewById(R.id.ingredient_name);
         textView.setText(cursor.getString(nameID));
         textView = (TextView) view.findViewById(R.id.ingredient_acidity);
-        textView.setText(String.valueOf(cursor.getInt(acidityID)));
+        textView.setText(String.valueOf(cursor.getDouble(acidityID)));
     }
 }

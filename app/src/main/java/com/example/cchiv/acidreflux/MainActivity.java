@@ -13,14 +13,21 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cchiv.acidreflux.data.IngredientContract.IngredientEntry;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -34,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayList<String> arrayList = new ArrayList<>();
+        final ArrayList<String> arrayList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
 
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.auto_complete);
@@ -47,8 +54,7 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
         linearLayout.setTag(-1);
 
         final TextView textView1 = (TextView) findViewById(R.id.acidic_none);
-        final TextView textView2 = (TextView) findViewById(R.id.acidic_low);
-        final TextView textView3 = (TextView) findViewById(R.id.acidic_high);
+        final TextView textView2 = (TextView) findViewById(R.id.acidic_true);
 
         textView1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
                     linearLayout.setTag(0);
                     v.setBackgroundColor(ContextCompat.getColor(getBaseContext(), R.color.accent));
                     textView2.setBackgroundColor(Color.TRANSPARENT);
-                    textView3.setBackgroundColor(Color.TRANSPARENT);
                 }
 
             }
@@ -76,43 +81,68 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
                     linearLayout.setTag(1);
                     v.setBackgroundColor(ContextCompat.getColor(getBaseContext(), R.color.accent));
                     textView1.setBackgroundColor(Color.TRANSPARENT);
-                    textView3.setBackgroundColor(Color.TRANSPARENT);
                 }
             }
         });
 
-        textView3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if((int) linearLayout.getTag() == 2) {
-                    linearLayout.setTag(-1);
-                    v.setBackgroundColor(Color.TRANSPARENT);
-                } else {
-                    linearLayout.setTag(2);
-                    v.setBackgroundColor(ContextCompat.getColor(getBaseContext(), R.color.accent));
-                    textView1.setBackgroundColor(Color.TRANSPARENT);
-                    textView2.setBackgroundColor(Color.TRANSPARENT);
-                }
+        Button button;
+        final ArrayList<String> arrayListInput = new ArrayList<>();
 
-            }
-        });
-
-        Button button = (Button) findViewById(R.id.submit_ingredient);
+        button = (Button) findViewById(R.id.submit_ingredient);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String ingredientName  = autoCompleteTextView.getEditableText().toString();
+                arrayListInput.add(ingredientName);
+
+                autoCompleteTextView.setText(null);
+            }
+        });
+
+        button = (Button) findViewById(R.id.submit_ingredients);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 int ingredientAcidity = (int) linearLayout.getTag();
 
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(IngredientEntry.COL_ING_NAME, ingredientName);
-                contentValues.put(IngredientEntry.COL_ING_ACIDITY, ingredientAcidity);
-                getContentResolver().insert(Uri.parse("content://com.example.android.items/ingredients"), contentValues);
+                if(ingredientAcidity == -1)
+                    Toast.makeText(MainActivity.this, "Insert an acidity level", Toast.LENGTH_SHORT).show();
+                else {
+                    String ingredientName  = autoCompleteTextView.getEditableText().toString();
+                    if(!ingredientName.isEmpty())
+                        arrayListInput.add(ingredientName);
 
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(IngredientEntry.COL_ING_NAME, (new JSONArray(arrayListInput)).toString());
+                    contentValues.put(IngredientEntry.COL_ING_ACIDITY, ingredientAcidity);
+                    getContentResolver().insert(Uri.parse("content://com.example.android.items_reflux/ingredients"), contentValues);
+
+                    autoCompleteTextView.setText(null);
+                    arrayListInput.clear();
+
+                    Intent intent = new Intent(MainActivity.this, IngredientsActivity.class);
+                    startActivity(intent);
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_list_item : {
                 Intent intent = new Intent(MainActivity.this, IngredientsActivity.class);
                 startActivity(intent);
             }
-        });
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -135,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
         String[] projection = {
                 IngredientEntry.COL_ING_NAME
         };
-        return new CursorLoader(this, Uri.parse("content://com.example.android.items/ingredients"), projection, null, null, null);
+        return new CursorLoader(this, Uri.parse("content://com.example.android.items_reflux/ingredients/names"), projection, null, null, null);
     }
 
     @Override
@@ -143,7 +173,14 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
         arrayAdapter.clear();
         int indexName = data.getColumnIndex(IngredientEntry.COL_ING_NAME);
         while(data.moveToNext()) {
-            arrayAdapter.add(data.getString(indexName));
+            try {
+                JSONArray jsonArray = new JSONArray(data.getString(indexName));
+                for(int i = 0; i < jsonArray.length(); i++) {
+                    arrayAdapter.add(jsonArray.getString(i));
+                }
+            } catch (JSONException j) {
+                Log.v("JSON", j.toString());
+            }
         }
     }
 
