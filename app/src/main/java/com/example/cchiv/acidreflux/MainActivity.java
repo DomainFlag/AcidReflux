@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
             }
         });
 
+        final LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.layout_ingredients);
+
         Button button;
         final ArrayList<String> arrayListInput = new ArrayList<>();
 
@@ -92,8 +94,20 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ingredientName  = autoCompleteTextView.getEditableText().toString();
+                final String ingredientName  = autoCompleteTextView.getEditableText().toString();
                 arrayListInput.add(ingredientName);
+
+                LinearLayout linearLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.ingredient, null);
+                TextView textView = (TextView) linearLayout.findViewById(R.id.ingredient_name_input);
+                textView.setText(ingredientName);
+                linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        arrayListInput.remove(ingredientName);
+                        linearLayout1.removeView(v);
+                    }
+                });
+                linearLayout1.addView(linearLayout);
 
                 autoCompleteTextView.setText(null);
             }

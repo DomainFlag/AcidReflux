@@ -2,6 +2,8 @@ package com.example.cchiv.acidreflux;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,9 @@ import com.example.cchiv.acidreflux.data.IngredientContract.IngredientEntry;
  */
 
 public class IngredientsCursorAdapter extends CursorAdapter {
+
+    final private static int redHex = Integer.parseInt("EC1C4B", 16);
+    final private static int blueHex = Integer.parseInt("2F395", 16);
 
     public IngredientsCursorAdapter(Context context) {
         super(context, null, 0);
@@ -34,7 +39,11 @@ public class IngredientsCursorAdapter extends CursorAdapter {
 
         textView = (TextView) view.findViewById(R.id.ingredient_name);
         textView.setText(cursor.getString(nameID));
+
         textView = (TextView) view.findViewById(R.id.ingredient_acidity);
-        textView.setText(String.valueOf(cursor.getDouble(acidityID)));
+        double acidity = cursor.getDouble(acidityID);
+        int colorHex = (int) (blueHex + (redHex-blueHex)/2*(acidity+1.0));
+        ((GradientDrawable)textView.getBackground()).setColor(Color.parseColor("#"+Integer.toHexString(colorHex)));
+        textView.setText(String.format("%.01f", cursor.getDouble(acidityID)));
     }
 }
