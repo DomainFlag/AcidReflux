@@ -42,8 +42,14 @@ public class IngredientsCursorAdapter extends CursorAdapter {
 
         textView = (TextView) view.findViewById(R.id.ingredient_acidity);
         double acidity = cursor.getDouble(acidityID);
-        int colorHex = (int) (blueHex + (redHex-blueHex)/2*(acidity+1.0));
-        ((GradientDrawable)textView.getBackground()).setColor(Color.parseColor("#"+Integer.toHexString(colorHex)));
-        textView.setText(String.format("%.01f", cursor.getDouble(acidityID)));
+        if(Double.isNaN(acidity)) {
+            ((GradientDrawable)textView.getBackground()).setColor(Color.parseColor("#83AE9B"));
+            textView.setText("N");
+
+        } else {
+            int colorHex = (int) (blueHex + (redHex-blueHex)/2*(acidity+1.0));
+            ((GradientDrawable)textView.getBackground()).setColor(Color.parseColor("#"+Integer.toHexString(colorHex)));
+            textView.setText(String.format("%.01f", cursor.getDouble(acidityID)));
+        }
     }
 }
