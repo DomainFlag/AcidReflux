@@ -3,8 +3,13 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_recipe_builder"
+        android:title="Recipe Builder"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_list_item"
         android:title="List Items"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
 </menu>

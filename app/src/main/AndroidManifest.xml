@@ -18,6 +18,8 @@
         </activity>
         <activity android:name=".IngredientsActivity">
         </activity>
+        <activity android:name=".RecipeActivity"/>
+
         <provider
             android:authorities="com.example.android.items_reflux"
             android:name=".data.IngredientProvider"

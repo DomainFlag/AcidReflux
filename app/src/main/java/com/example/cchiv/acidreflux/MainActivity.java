@@ -143,6 +143,11 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
     }
 
     @Override
+    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
+        return super.onPrepareOptionsPanel(view, menu);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity, menu);
         return true;
@@ -154,6 +159,12 @@ public class MainActivity extends AppCompatActivity implements TextWatcher, Load
             case R.id.menu_list_item : {
                 Intent intent = new Intent(MainActivity.this, IngredientsActivity.class);
                 startActivity(intent);
+                break;
+            }
+            case R.id.menu_recipe_builder : {
+                Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
+                startActivity(intent);
+                break;
             }
         }
         return super.onOptionsItemSelected(item);

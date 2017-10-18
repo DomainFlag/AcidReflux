@@ -18,9 +18,6 @@ import com.example.cchiv.acidreflux.data.IngredientContract.IngredientEntry;
 
 public class IngredientsCursorAdapter extends CursorAdapter {
 
-    final private static int redHex = Integer.parseInt("EC1C4B", 16);
-    final private static int blueHex = Integer.parseInt("2F395", 16);
-
     public IngredientsCursorAdapter(Context context) {
         super(context, null, 0);
     }
@@ -45,11 +42,15 @@ public class IngredientsCursorAdapter extends CursorAdapter {
         if(Double.isNaN(acidity)) {
             ((GradientDrawable)textView.getBackground()).setColor(Color.parseColor("#83AE9B"));
             textView.setText("N");
-
         } else {
-            int colorHex = (int) (blueHex + (redHex-blueHex)/2*(acidity+1.0));
-            ((GradientDrawable)textView.getBackground()).setColor(Color.parseColor("#"+Integer.toHexString(colorHex)));
+            ((GradientDrawable)textView.getBackground()).setColor(findColor((acidity+1.0)/2));
             textView.setText(String.format("%.01f", cursor.getDouble(acidityID)));
         }
+    }
+
+    private int findColor(double percent){
+        int blue = (int) (255*percent);
+        int red = 255-blue;
+        return Color.rgb(red, 0, blue);
     }
 }
